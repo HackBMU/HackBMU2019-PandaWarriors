@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import "package:pull_to_refresh/pull_to_refresh.dart";
 import'security.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 class Home extends StatefulWidget{
 
@@ -83,7 +84,16 @@ class HomeState extends State<Home> {
             ],
           ),
         ),
-          body: allData.length == 0 ? new Text('no data') :
+          body: allData.length == 0 ?
+          new SplashScreen(
+          seconds: 10,
+//          title: new Text('Welcome In SplashScreen'),
+          image: new Image.asset('panda_warrior.png', fit: BoxFit.cover,),
+          backgroundColor: Colors.white,
+          styleTextUnderTheLoader: new TextStyle(),
+          photoSize: 100.0,
+          loaderColor: Colors.red
+      ) :
           RefreshIndicator(
               onRefresh: refresh,
               child: ListView(
@@ -185,6 +195,8 @@ class HomeState extends State<Home> {
     ),
   );
 
+
+
 }
 
 class CircleButton extends StatelessWidget {
@@ -211,6 +223,7 @@ class CircleButton extends StatelessWidget {
       ),
     );
   }
+
 
 }
 
