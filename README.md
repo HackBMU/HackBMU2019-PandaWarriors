@@ -1,4 +1,4 @@
-#Idea :- Non invasive Electrical Energy Analysis in realtime
+Idea :- Non invasive Electrical Energy Analysis in realtime
 
 Theme :- IOT
 
