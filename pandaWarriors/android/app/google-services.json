@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "809249803369",
+    "firebase_url": "https://bmu-hackathon.firebaseio.com",
+    "project_id": "bmu-hackathon",
+    "storage_bucket": "bmu-hackathon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809249803369:android:853d947165c5d1e8",
+        "android_client_info": {
+          "package_name": "practice.ram_tech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809249803369-tdsnqfafcm2a9112rok506772gg0ptvt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzcPAaZZMStekZlzmyvEb6bj06KcQ-Sik"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
