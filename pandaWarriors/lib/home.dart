@@ -50,29 +50,27 @@ class HomeState extends State<Home> {
                 child: ListView(
                     shrinkWrap: true,
                     children: [
-                      Stack(
-                        children: <Widget>[
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"), iconData: Icons.timer),
-                            top: 120.0,
-                            left: 10.0,
-                          ),
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"), iconData: Icons.place),
-                            top: 120.0,
-                            right: 10.0,
-                          ),
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"), iconData: Icons.local_pizza),
-                            top: 240.0,
-                            left: 130.0,
-                          ),
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"), iconData: Icons.satellite),
-                            top: 120.0,
-                            left: 130.0,
-                          ),
-                        ],
+                      Container(
+                        height: 500.0,
+                        child: Stack(
+                          children: <Widget>[
+                            new Positioned(
+                              child: new CircleButton(onTap: () => print("Cool"), iconLabel: 'bulb'),
+                              top: 50.0,
+                              left: 30.0,
+                            ),
+                            new Positioned(
+                              child: new CircleButton(onTap: () => print("Cool"), iconLabel: 'charger'),
+                              top: 300.0,
+                              left: 10.0,
+                            ),
+                            new Positioned(
+                              child: new CircleButton(onTap: () => print("Cool"), iconLabel: 'hair dryer'),
+                              top: 200.0,
+                              right: 10.0,
+                            ),
+                          ],
+                        ),
                       ),
                       new ListView.builder(
                         shrinkWrap: true,
@@ -124,31 +122,39 @@ class HomeState extends State<Home> {
     });
         return null;
   }
+
+  Widget bigCircle = new Container(
+    width: 300.0,
+    height: 300.0,
+    child: Center(child: Text('bulb')),
+    decoration: new BoxDecoration(
+      color: Colors.orange,
+      shape: BoxShape.circle,
+    ),
+  );
+
 }
 
 class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
-  final IconData iconData;
+  final String iconLabel;
+//  final double size;
 
-  const CircleButton({Key key, this.onTap, this.iconData}) : super(key: key);
+  const CircleButton({Key key, this.onTap, this.iconLabel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double size = 5.0;
-
+    double size = 200.0;
     return new InkResponse(
       onTap: onTap,
       child: new Container(
         width: size,
         height: size,
         decoration: new BoxDecoration(
-          color: Colors.white,
+          color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,
         ),
-        child: new Icon(
-          iconData,
-          color: Colors.black,
-        ),
+        child: Center( child: Text('$iconLabel')),
       ),
     );
   }
