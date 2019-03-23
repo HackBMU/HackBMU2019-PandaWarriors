@@ -6,6 +6,7 @@ import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import "package:pull_to_refresh/pull_to_refresh.dart";
 import'security.dart';
 import 'package:splashscreen/splashscreen.dart';
+import 'drawer.dart';
 
 class Home extends StatefulWidget{
 
@@ -51,49 +52,17 @@ class HomeState extends State<Home> {
           backgroundColor: Colors.red,
           title: Text('firebase'),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text("Nalin Luthra"),
-                accountEmail: Text("nalin.luthra@gmail.com"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor:
-                  Theme.of(context).platform == TargetPlatform.iOS
-                      ? Colors.red
-                      : Colors.white,
-                  child: Text(
-                    "N",
-                    style: TextStyle(fontSize: 40.0),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Usage Division'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => Security()));
-                },
-              ),
-              ListTile(
-                title: Text('Security'),
-                trailing: Icon(Icons.arrow_forward),
-              ),
-            ],
-          ),
-        ),
+        drawer: drawer(),
           body: allData.length == 0 ?
           new SplashScreen(
           seconds: 10,
 //          title: new Text('Welcome In SplashScreen'),
-          image: new Image.asset('panda_warrior.png', fit: BoxFit.cover,),
+          image: Image.asset('panda_warriors.png', height: 500.0, width: 500.0,),
           backgroundColor: Colors.white,
           styleTextUnderTheLoader: new TextStyle(),
           photoSize: 100.0,
           loaderColor: Colors.red
-      ) :
+          ):
           RefreshIndicator(
               onRefresh: refresh,
               child: ListView(
@@ -136,6 +105,10 @@ class HomeState extends State<Home> {
                         ],
                       ),
                     ),
+                    ListTile(
+                      trailing: Text('$size'),
+                      leading: Text('$size'),
+                    ),
                     new ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (_, index) {
@@ -164,26 +137,6 @@ class HomeState extends State<Home> {
     );
   }
 
-  Future<Null> refresh () async {
-    await Future.delayed(Duration(seconds: 2));
-    DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var devices = ref.child('bmu-hackathon').child('temperature');
-
-    devices.once().then((DataSnapshot snap) {
-      var keys = snap.value.keys;
-      var data = snap.value;
-      allData.clear();
-      for (var key in keys) {
-        setState(() {
-          allData.add(
-              new myData(
-                  data[key]['date'], data[key]['time'], data[key]['value'])
-          );
-        });
-      }
-    });
-    return null;
-  }
 
   Widget bigCircle = new Container(
     width: 300.0,
