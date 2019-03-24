@@ -7,7 +7,7 @@ import requests
 import json
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('firebase-adminsdk.json')
+cred = credentials.Certificate('bmu-hackathon-firebase-adminsdk-ipov7-e3049ac49c.json')
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://bmu-hackathon.firebaseio.com/'
@@ -35,62 +35,70 @@ ref.set({
                     'power': 1000,
                     #'length': 1
                 }
-                'Unkown':{
-                	'color' : 'Grey',
-                	'status': 'OFF',
-                	'power' : '0'
-                }
+                # 'Unkown':{
+                # 	'color' : 'Grey',
+                # 	'status': 'OFF',
+                # 	'power' : '0'
+                # }
             }
         })
 
-ser = serial.Serial('/dev/ttyACM1', 9600, timeout=0)
+#ser = serial.Serial('/dev/ttyACM1', 9600, timeout=0)
 
 cur = 0
 
 while 1:
 	try:
-		current = ser.readline()
-    	difference = current - cur
-    	if(difference>0):
-	    	if(difference>30 && difference<50):
-	      		#Update Data Values
-	      		ref = db.reference('devices')
+		# current = 30
+		# print(current)
+		#current = float(current[0])
+		# current = [int(i) for i in lsInput if i.isdigit()]
+    	#difference = current - cur
+		difference = 100
+		if(difference>0):
+			if(difference>30 and difference<50):
+				#Update Data Values
+				ref = db.reference('devices')
 				box_ref = ref.child('Laptop')
 				box_ref.update({
-				    'status': 'ON'
+				    'Status': 'ON'
 				})
-			if(difference>90 && difference<100)
+			if(difference>90 and difference<110):
 				ref = db.reference('devices')
 				box_ref = ref.child('Bulb')
 				box_ref.update({
-				    'status': 'ON'
+				    'Status': 'ON'
 				})
-			if(difference>90 && difference<100)
+			if(difference>90 and difference<100):
 				ref = db.reference('devices')
 				box_ref = ref.child('Hair-Dryer')
 				box_ref.update({
-				    'status': 'ON'
+				    'Status': 'ON'
 				})
 		if(difference<0):
 			difference = difference*(-1)
-	    	if(difference>30 && difference<50):
-	      		#Update Data Values
-	      		ref = db.reference('devices')
+			if(difference>30 and difference<50):
+				#Update Data Values
+				ref = db.reference('devices')
 				box_ref = ref.child('Laptop')
 				box_ref.update({
-				    'status': 'OFF'
+				    'Status': 'OFF'
 				})
-			if(difference>90 && difference<100)
+			if(difference>90 and difference<100):
 				ref = db.reference('devices')
 				box_ref = ref.child('Bulb')
 				box_ref.update({
-				    'status': 'OFF'
+				    'Status': 'OFF'
 				})
-			if(difference>90 && difference<100)
+			if(difference>90 and difference<100):
 				ref = db.reference('devices')
 				box_ref = ref.child('Hair-Dryer')
 				box_ref.update({
-				    'status': 'OFF'
+				    'Status': 'OFF'
 				})
+		#cur = current
+	except IOError:
+		print('Error! Something went wrong.')
+  #time.sleep(fixed_interval)
 
 
