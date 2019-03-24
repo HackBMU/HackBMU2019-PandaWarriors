@@ -6,6 +6,8 @@ import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import "package:pull_to_refresh/pull_to_refresh.dart";
 import'security.dart';
 import 'package:splashscreen/splashscreen.dart';
+import 'drawer.dart';
+import 'dart:math';
 
 class Home extends StatefulWidget{
 
@@ -21,16 +23,20 @@ class HomeState extends State<Home> {
   @override
   void initState () {
     DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var devices = ref.child('bmu-hackathon').child('temperature');
+    var devices = ref.child('devices');
     devices.once().then((DataSnapshot snap) {
-      var keys = snap.value.keys;
+
+
       var data = snap.value;
+      var keys = snap.value.keys;
+      print(data);
       allData.clear();
       for (var key in keys) {
+        print(key);
         myData d = new myData(
-          data[key]['date'],
-          data[key]['time'],
-          data[key]['value'],
+          data[key]['status'],
+          data[key]['color'],
+          data[key]['power'],
         );
         allData.add(d);
       }
@@ -40,108 +46,87 @@ class HomeState extends State<Home> {
     });
   }
 
-  static double size = double.parse(allData[2].value);
+  static int size0 = allData[0].power;
+  static int size1 = allData[1].power;
+  static int size2 = allData[2].power;
 
   @override
   Widget build (BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: Text('firebase'),
+        appBar:
+        AppBar(
+          backgroundColor: Colors.red[800],
+          title: Center( child: Text('Home Screen')),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text("Nalin Luthra"),
-                accountEmail: Text("nalin.luthra@gmail.com"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor:
-                  Theme.of(context).platform == TargetPlatform.iOS
-                      ? Colors.red
-                      : Colors.white,
-                  child: Text(
-                    "N",
-                    style: TextStyle(fontSize: 40.0),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Usage Division'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => Security()));
-                },
-              ),
-              ListTile(
-                title: Text('Security'),
-                trailing: Icon(Icons.arrow_forward),
-              ),
-            ],
-          ),
-        ),
+        drawer: drawer(),
           body: allData.length == 0 ?
           new SplashScreen(
           seconds: 10,
 //          title: new Text('Welcome In SplashScreen'),
-          image: new Image.asset('panda_warrior.png', fit: BoxFit.cover,),
+          image: Image.asset('panda_warriors.png', height: 500.0, width: 500.0,),
           backgroundColor: Colors.white,
           styleTextUnderTheLoader: new TextStyle(),
           photoSize: 100.0,
           loaderColor: Colors.red
-      ) :
+          ):
           RefreshIndicator(
               onRefresh: refresh,
               child: ListView(
                   shrinkWrap: true,
                   children: [
                     Container(
-                      height: 500.0,
+                      height: 400.0,
                       child: Stack(
                         children: <Widget>[
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(size.runtimeType),
-                                iconLabel: 'bulb',
-                                size: size),
-                            top: 10.0,
-                            right: 30.0,
+                                onTap: () => print(usage(size0).toInt()),
+                                iconLabel: 'Laptop',
+                                usage: usage(size0).toInt(),
+                                size: (usage(size0).toInt())*50),
+                            top: 50.0,
+                            right: 0.0,
                           ),
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(size.runtimeType),
+                                onTap: () => print(usage(size1).toInt()),
+                                usage: usage(size1).toInt(),
                                 iconLabel: 'bulb',
-                                size: size),
-                            top: 100.0,
-                            left: 30.0,
+                                size: (usage(size1).toInt())*20),
+                            top: 30.0,
+                            left: 20.0,
                           ),
+//                          new Positioned(
+//                            child: new CircleButton(onTap: () => print("Cool"),
+//                                iconLabel: 'charger',
+//                                size: 100),
+//                            top: 300.0,
+//                            left: 10.0,
+//                          ),
                           new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"),
-                                iconLabel: 'charger',
-                                size: 100.0),
-                            top: 300.0,
-                            left: 10.0,
-                          ),
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"),
+                            child: new CircleButton(onTap: () => print(usage(size2).toInt()),
                                 iconLabel: 'hair dryer',
-                                size: 100.0),
+                                usage: usage(size2).toInt(),
+                                size: (usage(size2).toInt())*3),
                             top: 200.0,
                             right: 10.0,
                           ),
                         ],
                       ),
                     ),
+                    ListTile(
+                      trailing: Text('$net', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                      leading: Text('$net', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                    ),
                     new ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (_, index) {
-                        return UI(allData[index].date, allData[index].time,
-                            allData[index].value);
-                      }, itemCount: 4,
+                        return UI(allData[index].status, allData[index].color,
+                            allData[index].power);
+                      }, itemCount: allData.length,
                     )
                   ]
               )
@@ -149,25 +134,23 @@ class HomeState extends State<Home> {
       ),
     );
   }
+  static int net = Sum(size0, size1, size2);
+  static int Sum(int size0, int size1, int size2){
 
-  Widget UI (String date, String time, String value) {
-    return new Card(
-      child: new Container(
-        child: new Column(
-          children: <Widget>[
-            new Text('date: $date'),
-            new Text('time: $time'),
-            new Text('vale: $value'),
-          ],
-        ),
-      ),
-    );
+    var sum = size1+size0+size2;
+    return sum;
   }
 
-  Future<Null> refresh () async {
+double usage(int size){
+
+    return size/(net)*100;
+
+  }
+
+  Future<Null> refresh() async {
     await Future.delayed(Duration(seconds: 2));
     DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var devices = ref.child('bmu-hackathon').child('temperature');
+    var devices = ref.child('devices');
 
     devices.once().then((DataSnapshot snap) {
       var keys = snap.value.keys;
@@ -176,24 +159,45 @@ class HomeState extends State<Home> {
       for (var key in keys) {
         setState(() {
           allData.add(
-              new myData(
-                  data[key]['date'], data[key]['time'], data[key]['value'])
+              new myData(data[key]['Status'], data[key]['color'], data[key]['power'])
           );
         });
+
       }
+
     });
     return null;
   }
 
-  Widget bigCircle = new Container(
-    width: 300.0,
-    height: 300.0,
-    child: Center(child: Text('bulb')),
-    decoration: new BoxDecoration(
-      color: Colors.orange,
-      shape: BoxShape.circle,
-    ),
-  );
+  Widget UI (String status, String color, int power) {
+    return new Card(
+      child: new Container(
+        color: Colors.red[800],
+        child: new Column(
+          children: <Widget>[
+            Container(
+              child: Padding(padding: EdgeInsets.only(top: 40.0, right: 30.0),child: Text('Status: $status', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
+            height: 124.0,
+                margin: new EdgeInsets.only(left: 46.0),
+              decoration: new BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: new BorderRadius.circular(8.0),
+//          boxShadow: <BoxShadow>[
+//           new BoxShadow(
+//              color: Colors.black12,
+//              blurRadius: 10.0,
+//              offset: new Offset(0.0, 10.0),
+//            ),
+//          ],
+        ),
+      ),
+//            new Text('Color: $color') ,
+            new Padding(padding: EdgeInsets.only(bottom: 30.0), child: Text('Power Consumed: $power', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
+          ],
+        ),
+      ),
+    );
+  }
 
 
 
@@ -202,25 +206,26 @@ class HomeState extends State<Home> {
 class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
   final String iconLabel;
-  final double size;
+  final int size;
+  final int usage;
 
-
-  const CircleButton({Key key, this.onTap, this.iconLabel, this.size}) : super(key: key);
+  const CircleButton({Key key, this.onTap, this.iconLabel, this.size, this.usage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-//    double size = 100.0;
     return new InkResponse(
       onTap: onTap,
-      child: new Container(
-        width: size,
-        height: size,
+      child: new Center( child: Container(
+        width: size.toDouble(),
+        height: size.toDouble(),
         decoration: new BoxDecoration(
           color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,
         ),
-        child: Center(child: Text('$iconLabel')),
+        child: Center( child: Column(children: [Container(height: 10.0,), Text('$iconLabel', style: TextStyle(color: Colors.white, fontSize: 20.0)),Text('$usage', style: TextStyle(color: Colors.white,))]),
       ),
+      ),
+    ),
     );
   }
 
