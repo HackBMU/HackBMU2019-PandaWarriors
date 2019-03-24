@@ -56,9 +56,10 @@ class HomeState extends State<Home> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
+        appBar:
+        AppBar(
           backgroundColor: Colors.red[800],
-          title: Center( child: Text('firebase')),
+          title: Center( child: Text('Home Screen')),
         ),
         drawer: drawer(),
           body: allData.length == 0 ?
@@ -85,7 +86,7 @@ class HomeState extends State<Home> {
                                 onTap: () => print(usage(size0).toInt()),
                                 iconLabel: 'Laptop',
                                 usage: usage(size0).toInt(),
-                                size: (usage(size0).toInt())*20),
+                                size: (usage(size0).toInt())*50),
                             top: 50.0,
                             right: 0.0,
                           ),
@@ -110,15 +111,15 @@ class HomeState extends State<Home> {
                                 iconLabel: 'hair dryer',
                                 usage: usage(size2).toInt(),
                                 size: (usage(size2).toInt())*3),
-                            top: 130.0,
+                            top: 200.0,
                             right: 10.0,
                           ),
                         ],
                       ),
                     ),
                     ListTile(
-                      trailing: Text('$net'),
-                      leading: Text('$net'),
+                      trailing: Text('$net', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                      leading: Text('$net', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
                     ),
                     new ListView.builder(
                       shrinkWrap: true,
@@ -158,7 +159,7 @@ double usage(int size){
       for (var key in keys) {
         setState(() {
           allData.add(
-              new myData(data[key]['status'], data[key]['color'], data[key]['power'])
+              new myData(data[key]['Status'], data[key]['color'], data[key]['power'])
           );
         });
 
@@ -171,27 +172,32 @@ double usage(int size){
   Widget UI (String status, String color, int power) {
     return new Card(
       child: new Container(
+        color: Colors.red[800],
         child: new Column(
           children: <Widget>[
-            new Text('date: $status'),
-            new Text('time: $color'),
-            new Text('vale: $power'),
+            Container(
+              child: Padding(padding: EdgeInsets.only(top: 40.0, right: 30.0),child: Text('Status: $status', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
+            height: 124.0,
+                margin: new EdgeInsets.only(left: 46.0),
+              decoration: new BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: new BorderRadius.circular(8.0),
+//          boxShadow: <BoxShadow>[
+//           new BoxShadow(
+//              color: Colors.black12,
+//              blurRadius: 10.0,
+//              offset: new Offset(0.0, 10.0),
+//            ),
+//          ],
+        ),
+      ),
+//            new Text('Color: $color') ,
+            new Padding(padding: EdgeInsets.only(bottom: 30.0), child: Text('Power Consumed: $power', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
           ],
         ),
       ),
     );
   }
-
-
-  Widget bigCircle = new Container(
-    width: 300.0,
-    height: 300.0,
-    child: Center(child: Text('bulb')),
-    decoration: new BoxDecoration(
-      color: Colors.orange,
-      shape: BoxShape.circle,
-    ),
-  );
 
 
 
@@ -216,7 +222,7 @@ class CircleButton extends StatelessWidget {
           color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,
         ),
-        child: Center( child: Column(children: [Container(height: 10.0,), Text('$iconLabel', style: TextStyle(color: Colors.white)),Text('$usage', style: TextStyle(color: Colors.white,))]),
+        child: Center( child: Column(children: [Container(height: 10.0,), Text('$iconLabel', style: TextStyle(color: Colors.white, fontSize: 20.0)),Text('$usage', style: TextStyle(color: Colors.white,))]),
       ),
       ),
     ),
