@@ -76,14 +76,14 @@ class HomeState extends State<Home> {
                   shrinkWrap: true,
                   children: [
                     Container(
-                      height: 500.0,
+                      height: 800.0,
                       child: Stack(
                         children: <Widget>[
                           new Positioned(
                             child: new CircleButton(
                                 onTap: () => print(Usage(size0).toInt()),
                                 iconLabel: 'Laptop',
-                                size: (Usage(size0).toInt())),
+                                size: (Usage(size0).toInt())*20),
                             top: 10.0,
                             right: 30.0,
                           ),
@@ -91,8 +91,8 @@ class HomeState extends State<Home> {
                             child: new CircleButton(
                                 onTap: () => print(Usage(size1).toInt()),
                                 iconLabel: 'bulb',
-                                size: (Usage(size1).toInt())),
-                            top: 200.0,
+                                size: (Usage(size1).toInt())*20),
+                            top: 100.0,
                             left: 30.0,
                           ),
 //                          new Positioned(
@@ -105,8 +105,8 @@ class HomeState extends State<Home> {
                           new Positioned(
                             child: new CircleButton(onTap: () => print(Usage(size2).toInt()),
                                 iconLabel: 'hair dryer',
-                                size: (Usage(size2).toInt())),
-                            top: 400.0,
+                                size: (Usage(size2).toInt())*5),
+                            top: 300.0,
                             right: 10.0,
                           ),
                         ],
@@ -121,7 +121,7 @@ class HomeState extends State<Home> {
                       itemBuilder: (_, index) {
                         return UI(allData[index].status, allData[index].color,
                             allData[index].power);
-                      }, itemCount: 4,
+                      }, itemCount: allData.length,
                     )
                   ]
               )
@@ -213,7 +213,7 @@ class CircleButton extends StatelessWidget {
           color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,
         ),
-        child: Center(child: Text('$iconLabel')),
+        child: Center(child: Text('$iconLabel', style: TextStyle(color: Colors.white))),
       ),
     );
   }
