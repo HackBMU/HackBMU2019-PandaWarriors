@@ -34,7 +34,7 @@ class HomeState extends State<Home> {
       for (var key in keys) {
         print(key);
         myData d = new myData(
-          data[key]['status'],
+          data[key]['Status'],
           data[key]['color'],
           data[key]['power'],
         );
@@ -58,7 +58,7 @@ class HomeState extends State<Home> {
       home: Scaffold(
         appBar:
         AppBar(
-          backgroundColor: Colors.red[800],
+          backgroundColor: Colors.red[600],
           title: Center( child: Text('Home Screen')),
         ),
         drawer: drawer(),
@@ -107,7 +107,7 @@ class HomeState extends State<Home> {
 //                            left: 10.0,
 //                          ),
                           new Positioned(
-                            child: new CircleButton(onTap: () => print(usage(size2).toInt()),
+                            child: new CircleButton(onTap: () => print(allData[2].),
                                 iconLabel: 'hair dryer',
                                 usage: usage(size2).toInt(),
                                 size: (usage(size2).toInt())*3),
@@ -172,9 +172,10 @@ double usage(int size){
   Widget UI (String status, String color, int power) {
     return new Card(
       child: new Container(
-        color: Colors.red[800],
+        color: Colors.red[400],
         child: new Column(
           children: <Widget>[
+//            Padding(padding: EdgeInsets.only(top: 40.0),child: Text('device', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
             Container(
               child: Padding(padding: EdgeInsets.only(top: 40.0, right: 30.0),child: Text('Status: $status', style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),)),
             height: 124.0,
@@ -198,9 +199,6 @@ double usage(int size){
       ),
     );
   }
-
-
-
 }
 
 class CircleButton extends StatelessWidget {
