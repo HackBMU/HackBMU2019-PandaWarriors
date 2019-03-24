@@ -7,6 +7,7 @@ import "package:pull_to_refresh/pull_to_refresh.dart";
 import'security.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'drawer.dart';
+import 'dart:math';
 
 class Home extends StatefulWidget{
 
@@ -22,16 +23,20 @@ class HomeState extends State<Home> {
   @override
   void initState () {
     DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var devices = ref.child('bmu-hackathon').child('temperature');
+    var devices = ref.child('devices');
     devices.once().then((DataSnapshot snap) {
-      var keys = snap.value.keys;
+
+
       var data = snap.value;
+      var keys = snap.value.keys;
+      print(data);
       allData.clear();
       for (var key in keys) {
+        print(key);
         myData d = new myData(
-          data[key]['date'],
-          data[key]['time'],
-          data[key]['value'],
+          data[key]['status'],
+          data[key]['color'],
+          data[key]['power'],
         );
         allData.add(d);
       }
@@ -41,7 +46,9 @@ class HomeState extends State<Home> {
     });
   }
 
-  static double size = double.parse(allData[2].value);
+  static int size0 = allData[0].power;
+  static int size1 = allData[1].power;
+  static int size2 = allData[2].power;
 
   @override
   Widget build (BuildContext context) {
@@ -74,46 +81,46 @@ class HomeState extends State<Home> {
                         children: <Widget>[
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(size.runtimeType),
-                                iconLabel: 'bulb',
-                                size: size),
+                                onTap: () => print(Usage(size0).toInt()),
+                                iconLabel: 'Laptop',
+                                size: (Usage(size0).toInt())),
                             top: 10.0,
                             right: 30.0,
                           ),
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(size.runtimeType),
+                                onTap: () => print(Usage(size1).toInt()),
                                 iconLabel: 'bulb',
-                                size: size),
-                            top: 100.0,
+                                size: (Usage(size1).toInt())),
+                            top: 200.0,
                             left: 30.0,
                           ),
+//                          new Positioned(
+//                            child: new CircleButton(onTap: () => print("Cool"),
+//                                iconLabel: 'charger',
+//                                size: 100),
+//                            top: 300.0,
+//                            left: 10.0,
+//                          ),
                           new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"),
-                                iconLabel: 'charger',
-                                size: 100.0),
-                            top: 300.0,
-                            left: 10.0,
-                          ),
-                          new Positioned(
-                            child: new CircleButton(onTap: () => print("Cool"),
+                            child: new CircleButton(onTap: () => print(Usage(size2).toInt()),
                                 iconLabel: 'hair dryer',
-                                size: 100.0),
-                            top: 200.0,
+                                size: (Usage(size2).toInt())),
+                            top: 400.0,
                             right: 10.0,
                           ),
                         ],
                       ),
                     ),
                     ListTile(
-                      trailing: Text('$size'),
-                      leading: Text('$size'),
+                      trailing: Text('$net'),
+                      leading: Text('$net'),
                     ),
                     new ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (_, index) {
-                        return UI(allData[index].date, allData[index].time,
-                            allData[index].value);
+                        return UI(allData[index].status, allData[index].color,
+                            allData[index].power);
                       }, itemCount: 4,
                     )
                   ]
@@ -122,15 +129,49 @@ class HomeState extends State<Home> {
       ),
     );
   }
+  static int net = Sum(size0, size1, size2);
+  static int Sum(int size0, int size1, int size2){
 
-  Widget UI (String date, String time, String value) {
+    var sum = size1+size0+size2;
+    return sum;
+  }
+
+  static double Usage(int size){
+
+    return size/(net)*100;
+
+  }
+
+  Future<Null> refresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    DatabaseReference ref = FirebaseDatabase.instance.reference();
+    var devices = ref.child('devices');
+
+    devices.once().then((DataSnapshot snap) {
+      var keys = snap.value.keys;
+      var data = snap.value;
+      allData.clear();
+      for (var key in keys) {
+        setState(() {
+          allData.add(
+              new myData(data[key]['status'], data[key]['color'], data[key]['power'])
+          );
+        });
+
+      }
+
+    });
+    return null;
+  }
+
+  Widget UI (String status, String color, int power) {
     return new Card(
       child: new Container(
         child: new Column(
           children: <Widget>[
-            new Text('date: $date'),
-            new Text('time: $time'),
-            new Text('vale: $value'),
+            new Text('date: $status'),
+            new Text('time: $color'),
+            new Text('vale: $power'),
           ],
         ),
       ),
@@ -155,7 +196,7 @@ class HomeState extends State<Home> {
 class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
   final String iconLabel;
-  final double size;
+  final int size;
 
 
   const CircleButton({Key key, this.onTap, this.iconLabel, this.size}) : super(key: key);
@@ -166,8 +207,8 @@ class CircleButton extends StatelessWidget {
     return new InkResponse(
       onTap: onTap,
       child: new Container(
-        width: size,
-        height: size,
+        width: size.toDouble(),
+        height: size.toDouble(),
         decoration: new BoxDecoration(
           color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,

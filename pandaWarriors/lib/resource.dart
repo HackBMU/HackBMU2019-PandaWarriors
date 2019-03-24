@@ -1,5 +1,5 @@
 class myData {
-  String date, time, value;
-
-  myData(this.date, this.time, this.value);
+  String status, color;
+  int power;
+  myData(this.status, this.color, this.power);
 }

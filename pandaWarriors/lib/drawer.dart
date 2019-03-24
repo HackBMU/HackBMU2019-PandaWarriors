@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'security.dart';
 
 class drawer extends StatelessWidget{
 
@@ -27,7 +28,7 @@ class drawer extends StatelessWidget{
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (BuildContext context) => Security()));
             },
           ),
