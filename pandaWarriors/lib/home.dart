@@ -54,10 +54,11 @@ class HomeState extends State<Home> {
   Widget build (BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: Text('firebase'),
+          backgroundColor: Colors.red[800],
+          title: Center( child: Text('firebase')),
         ),
         drawer: drawer(),
           body: allData.length == 0 ?
@@ -76,24 +77,26 @@ class HomeState extends State<Home> {
                   shrinkWrap: true,
                   children: [
                     Container(
-                      height: 800.0,
+                      height: 400.0,
                       child: Stack(
                         children: <Widget>[
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(Usage(size0).toInt()),
+                                onTap: () => print(usage(size0).toInt()),
                                 iconLabel: 'Laptop',
-                                size: (Usage(size0).toInt())*20),
-                            top: 10.0,
-                            right: 30.0,
+                                usage: usage(size0).toInt(),
+                                size: (usage(size0).toInt())*20),
+                            top: 50.0,
+                            right: 0.0,
                           ),
                           new Positioned(
                             child: new CircleButton(
-                                onTap: () => print(Usage(size1).toInt()),
+                                onTap: () => print(usage(size1).toInt()),
+                                usage: usage(size1).toInt(),
                                 iconLabel: 'bulb',
-                                size: (Usage(size1).toInt())*20),
-                            top: 100.0,
-                            left: 30.0,
+                                size: (usage(size1).toInt())*20),
+                            top: 30.0,
+                            left: 20.0,
                           ),
 //                          new Positioned(
 //                            child: new CircleButton(onTap: () => print("Cool"),
@@ -103,10 +106,11 @@ class HomeState extends State<Home> {
 //                            left: 10.0,
 //                          ),
                           new Positioned(
-                            child: new CircleButton(onTap: () => print(Usage(size2).toInt()),
+                            child: new CircleButton(onTap: () => print(usage(size2).toInt()),
                                 iconLabel: 'hair dryer',
-                                size: (Usage(size2).toInt())*5),
-                            top: 300.0,
+                                usage: usage(size2).toInt(),
+                                size: (usage(size2).toInt())*3),
+                            top: 130.0,
                             right: 10.0,
                           ),
                         ],
@@ -136,7 +140,7 @@ class HomeState extends State<Home> {
     return sum;
   }
 
-  static double Usage(int size){
+double usage(int size){
 
     return size/(net)*100;
 
@@ -197,24 +201,25 @@ class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
   final String iconLabel;
   final int size;
+  final int usage;
 
-
-  const CircleButton({Key key, this.onTap, this.iconLabel, this.size}) : super(key: key);
+  const CircleButton({Key key, this.onTap, this.iconLabel, this.size, this.usage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-//    double size = 100.0;
     return new InkResponse(
       onTap: onTap,
-      child: new Container(
+      child: new Center( child: Container(
         width: size.toDouble(),
         height: size.toDouble(),
         decoration: new BoxDecoration(
           color: Color.fromRGBO(176, 0, 32, 1.0),
           shape: BoxShape.circle,
         ),
-        child: Center(child: Text('$iconLabel', style: TextStyle(color: Colors.white))),
+        child: Center( child: Column(children: [Container(height: 10.0,), Text('$iconLabel', style: TextStyle(color: Colors.white)),Text('$usage', style: TextStyle(color: Colors.white,))]),
       ),
+      ),
+    ),
     );
   }
 
